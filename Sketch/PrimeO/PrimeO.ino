@@ -1,11 +1,18 @@
-int E1 = 6,
-    M1 = 7,
-    E2 = 5,
-    M2 = 4;
+int MA = 12, //motor channel A pin
+    BA = 9, //brake channel A pin
+    SA = 3, //motor spin speed channel A pin
+    MB = 13, //motor channel B pin
+    BB = 8, //brake channel B pin
+    SB = 11; //motor spin speed channel B pin
 
-void setup() {
-  pinMode(M1, OUTPUT);
-  pinMode(M2, OUTPUT);
+void setup() {  
+  //Setup Channel A
+  pinMode(MA, OUTPUT); //Initiates Motor Channel A pin
+  pinMode(BA, OUTPUT); //Initiates Brake Channel A pin
+
+  //Setup Channel B
+  pinMode(MB, OUTPUT); //Initiates Motor Channel B pin
+  pinMode(BB, OUTPUT);  //Initiates Brake Channel B pin
 }
 
 void loop() {
@@ -21,34 +28,36 @@ void loop() {
 void Controller(char signal, int pwm_speed, int time_delay) {
   switch(signal) {
     case 'f': //move forward
-      Motor(E1, M1, pwm_speed, true);
-      Motor(E2, M2, pwm_speed, true);
+      Motor(MA, BA, SA, pwm_speed, true);
+      Motor(MB, BB, SB, pwm_speed, true);
       break;   
     case 'b': //move backwards
-      Motor(E1, M1, pwm_speed, false);
-      Motor(E2, M2, pwm_speed, false);
+      Motor(MA, BA, SA, pwm_speed, false);
+      Motor(MB, BB, SB, pwm_speed, false);
       break;     
     case 'l': //turn left
-      Motor(E1, M1, 0, false);
-      Motor(E2, M2, pwm_speed, true);
+      Motor(MA, BA, SA, 0, false);
+      Motor(MB, BB, SB, pwm_speed, true);
       break;   
     case 'r': //turn right
-      Motor(E1, M1, pwm_speed, true);
-      Motor(E2, M2, 0, false);
+      Motor(MA, BA, SA, pwm_speed, true);
+      Motor(MB, BB, SB, 0, false);
       break;  
     case 's': //full stop
-      Motor(E1, M1, 0, false);
-      Motor(E2, M2, 0, false);
+      Motor(MA, BA, SA, 0, false);
+      Motor(MB, BB, SB, 0, false);
       break;  
   }
   delay(time_delay);
 }
 
-void Motor(int E, int M, int pwm_speed, boolean forward) {
-  analogWrite(E, pwm_speed);
+void Motor(int M, int B, int S, int pwm_speed, boolean forward) {
   if(forward) {
     digitalWrite(M, HIGH);  
+    digitalWrite(B, LOW);  
   } else {
-    digitalWrite(M, LOW);  
+    digitalWrite(M, LOW); 
+    digitalWrite(B, LOW);  
   }
+  analogWrite(S, pwm_speed);
 }
